@@ -17,7 +17,6 @@ type exifResult struct {
 }
 
 func Decode(path string) (*exifResult, error) {
-
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -27,22 +26,39 @@ func Decode(path string) (*exifResult, error) {
 
 	exifData, err := exif.Decode(file)
 	if err != nil {
-		return nil, err
+		if exif.IsCriticalError(err) {
+			return nil, err
+		}
 	}
 	defer file.Close()
 
-	datetime, _ := exifData.DateTime()
+	datetime, err := exifData.DateTime()
+	if err != nil {
+		return nil, err
+	}
 
-	exifCamMake, _ := exifData.Get(exif.Make)
+	exifCamMake, err := exifData.Get(exif.Make)
+	if err != nil {
+		return nil, err
+	}
 	camMake := exifCamMake.String()
 
-	exifCamModel, _ := exifData.Get(exif.Model)
+	exifCamModel, err := exifData.Get(exif.Model)
+	if err != nil {
+		return nil, err
+	}
 	camModel := exifCamModel.String()
 
-	exifLensMake, _ := exifData.Get(exif.LensMake)
+	exifLensMake, err := exifData.Get(exif.LensMake)
+	if err != nil {
+		return nil, err
+	}
 	lensMake := exifLensMake.String()
 
-	exifLensModel, _ := exifData.Get(exif.LensModel)
+	exifLensModel, err := exifData.Get(exif.LensModel)
+	if err != nil {
+		return nil, err
+	}
 	lensModel := exifLensModel.String()
 
 	GenExif := exifResult{

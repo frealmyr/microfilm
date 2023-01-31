@@ -2,15 +2,23 @@ package scan
 
 import (
 	"encoding/hex"
-	"fmt"
 	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/frealmyr/microfilm/pkg/checksum"
 	"github.com/frealmyr/microfilm/pkg/exif"
 )
+
+type fileInfo struct {
+	filename string
+	basepath string
+	album    string
+	checksum string
+	exif     any
+}
 
 func walk(path string, d fs.DirEntry, err error) error {
 	if err != nil {
@@ -18,25 +26,28 @@ func walk(path string, d fs.DirEntry, err error) error {
 	}
 
 	if !d.IsDir() {
-		dir := filepath.Dir(path)
-		parent := filepath.Base(dir)
+		basepath := filepath.Dir(path)
+		parent := filepath.Base(basepath)
 		file := filepath.Base(path)
-
-		println()
-		println("File: " + file)
-		println("Album: " + parent)
-		println("Checksum: " + hex.EncodeToString((checksum.Md5(path))))
 
 		exif, err := exif.Decode(path)
 		if err != nil {
-			// log.Fatal(err)
-			fmt.Printf("info: exif no data")
+			exif = nil
 		}
-		fmt.Printf("%+v\n", exif) // TODO: Output to SQL statement
+
+		resultFileInfo := fileInfo{
+			filename: file,
+			basepath: basepath,
+			album:    parent,
+			checksum: hex.EncodeToString((checksum.Md5(path))),
+			exif:     exif,
+		}
+
+		spew.Dump(resultFileInfo)
 	}
 	return nil
 }
 
 func Folder() {
-	fmt.Println(filepath.WalkDir(os.Getenv("WATCH_DIR"), walk))
+	filepath.WalkDir(os.Getenv("WATCH_DIR"), walk)
 }
