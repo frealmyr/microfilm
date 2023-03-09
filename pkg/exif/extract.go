@@ -9,11 +9,11 @@ import (
 )
 
 type exifResult struct {
-	timestamp time.Time `json:"timestamp"`
-	make      string    `json:"make"`
-	model     string    `json:"model"`
-	lensMake  string    `json:"lensMake"`
-	lensModel string    `json:"lensModel"`
+	Timestamp time.Time `json:"timestamp"`
+	Make      string    `json:"make"`
+	Model     string    `json:"model"`
+	LensMake  string    `json:"lensMake"`
+	LensModel string    `json:"lensModel"`
 }
 
 func Decode(path string) (*exifResult, error) {
@@ -63,11 +63,11 @@ func Decode(path string) (*exifResult, error) {
 
 	// Generate JSON
 	json := exifResult{
-		timestamp: datetime,
-		make:      camMake,
-		model:     camModel,
-		lensMake:  lensMake,
-		lensModel: lensModel,
+		Timestamp: datetime,
+		Make:      camMake,
+		Model:     camModel,
+		LensMake:  lensMake,
+		LensModel: lensModel,
 	}
 
 	return &json, nil

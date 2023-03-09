@@ -2,11 +2,11 @@ package db
 
 import (
 	"database/sql"
-	"encoding/hex"
 	"fmt"
 	"log"
 
-	"github.com/frealmyr/microfilm/pkg/checksum"
+	"github.com/davecgh/go-spew/spew"
+	"github.com/frealmyr/microfilm/internal/bootstrap"
 )
 
 type pathChecksum struct {
@@ -14,15 +14,15 @@ type pathChecksum struct {
 	checksum string
 }
 
-func Lookup(images []string) {
-	var allRecords []pathChecksum
+type JsonImage = bootstrap.JsonImage
+type JsonExif = bootstrap.JsonExif
+
+func Lookup(images []jsonImage) {
+	// var allRecords []pathChecksum
 
 	for _, image := range images {
-		item := pathChecksum{
-			filepath: image,
-			checksum: hex.EncodeToString(checksum.Md5(image)),
-		}
-		allRecords = append(allRecords, item)
+		fmt.Println("Immateapot")
+		spew.Dump(image)
 	}
 	// spew.Dump(allRecords)
 
